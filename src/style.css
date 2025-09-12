@@ -1,0 +1,17 @@
+.rw-srv {
+    width: 100%;
+    text-align: center;
+}
+
+.rw-srv button {
+    display: inline-block;
+    margin: 2px;
+    background-color: #A66CC9;
+    color: #161622;
+    border: #3C1059 solid 1px;
+    border-radius: 5px;
+}
+
+.rw-srv button:hover {
+    background-color: #6c3b8a;
+}
