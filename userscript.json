@@ -1,0 +1,9 @@
+{
+    "name": "RoWindy",
+    "description": "gustwindy's roblox additions",
+    "author": "@gustwindy",
+    "namespace": "https://guhw.dev/",
+    "version": "1.0.0",
+    "match": "*://*.roblox.com/*",
+    "grant": "none"
+}
