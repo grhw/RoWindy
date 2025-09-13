@@ -43,43 +43,13 @@ Object.keys(rwData["friend_pins"]).forEach((category)=>{
 document_html.append(elm)
 
 function getUserPinCategory(userId) {
-    var f = null
-    Object.keys(rwData["friend_pins"]).forEach((category)=>{
+    for (const category of Object.keys(rwData["friend_pins"])) {
         const arr = rwData["friend_pins"][category]["users"]
         if (arr.includes(userId)) {
-            f = rwData["friend_pins"][category]
+            return rwData["friend_pins"][category]
         }
-    })
-    return f
-}
-
-function createList(container,title) {
-    const list = document.createElement("div");
-    list.classList.add("react-friends-carousel-container")
-
-    list.innerHTML = listHtml.replaceAll("{TITLE}",`<span style="color: var(--category-color);">${title}</span> <span class="count">(0)</span>`)
-    container.prepend(list)
-
-    return [list,list.querySelector(".friends-carousel-list-container"),list.querySelector(".count")]
-}
-
-async function addPeopleToList(list,user_ids) {
-    if (user_ids.length === 0) return
-
-    const headshots_raw = await fetch(`https://thumbnails.roblox.com/v1/users/avatar-headshot?size=150x150&format=Png&userIds=${user_ids.join(",")}`)
-    const headshots = await headshots_raw.json()
-    const users_raw = await fetch("https://users.roblox.com/v1/users",{
-        method: "POST",
-        body: JSON.stringify({
-            "userIds": user_ids,
-            "excludeBannedUsers": false
-        })
-    })
-    const users = await users_raw.json()
-
-    user_ids.forEach((user_id,i)=>{
-        createIcon(list,user_id,headshots["data"][i].imageUrl,users["data"][i]["displayName"],"Offline","offline")
-    })
+    }
+    return null
 }
 
 function pinUser(aEl,userId) {
@@ -117,7 +87,6 @@ hookedPage.push(()=>{
 
     document.querySelectorAll("a.avatar-card-link").forEach(icon=>{
         const category = getUserPinCategory(icon.href.split("/")[4])
-        console.log(category)
         if (category) {
             icon.parentElement.style.border = `solid 4px ${category["color"]}`
         }
@@ -127,15 +96,21 @@ hookedPage.push(()=>{
         user.classList.add("rw-card")
 
         const a = document.createElement("a")
-        a.innerHTML = pinIcon
         a.classList.add("rw-pin")
-        a.setAttribute("filled","false")
+
+        const userId = user.tagName === "LI" 
+            ? user.id 
+            : document.querySelector(".profile-platform-container")?.getAttribute("data-profile-id")
+
+        const existingCategory = userId ? getUserPinCategory(userId) : null
+        if (existingCategory) {
+            pinUser(a,userId)
+        } else {
+            a.innerHTML = pinIcon
+            a.setAttribute("filled","false")
+        }
 
         a.onclick = ()=>{
-            const userId = user.tagName === "LI" 
-                ? user.id 
-                : document.querySelector(".profile-platform-container")?.getAttribute("data-profile-id")
-
             if (!userId) return
 
             if (a.getAttribute("filled") === "true") {
@@ -149,7 +124,7 @@ hookedPage.push(()=>{
             elm.style.display = "block"
 
             callback = ()=>{
-                pinUser(user,a,userId)
+                pinUser(a,userId)
                 return userId
             }
         }

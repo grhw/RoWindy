@@ -22,6 +22,7 @@
 
 .rw-page .option {
     height: 20px;
+    display: block;
 }
 .rw-page input {
     height: 20px;

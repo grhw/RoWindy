@@ -24,14 +24,21 @@ if (window.location.pathname.split("/")[2].toLowerCase() == "categories") {
                 const settings = document.querySelector(".rw-template").cloneNode(true)
                 const title = settings.querySelector("h2")
                 const col = settings.querySelector("#color input")
+                const name = settings.querySelector("#name input")
+                const saveElm = settings.querySelector(".save")
                 title.innerText = category
 
                 col.value = rwData["friend_pins"][category]["color"]
-                col.oninput = ()=>{
-                    rwData["friend_pins"][category]["color"] = col.value
-                    save()
-                }
+                name.value = category
 
+                saveElm.onclick = ()=>{
+                    rwData["friend_pins"][category]["color"] = col.value
+                    rwData["friend_pins"][name.value] = rwData["friend_pins"][category]
+                    delete rwData["friend_pins"][category]
+
+                    save()
+                    window.location.reload()
+                }
                 settings.classList.remove("rw-template")
 
                 document.querySelector("#content").append(settings)
