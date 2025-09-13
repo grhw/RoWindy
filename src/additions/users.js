@@ -67,6 +67,7 @@ function createList(container,title) {
     return [list,list.querySelector(".friends-carousel-list-container"),list.querySelector(".count")]
 }
 
+const presences = ["offline","online","ingame"]
 async function addPeopleToList(list,user_ids) {
     if (user_ids.length === 0) return
 
@@ -80,9 +81,17 @@ async function addPeopleToList(list,user_ids) {
         })
     })
     const users = await users_raw.json()
+    const status_raw = await fetch("https://presence.roblox.com/v1/presence/users",{
+        method: "POST",
+        body: JSON.stringify({
+            "userIds": user_ids,
+        })
+    })
+    const status = await status_raw.json()
 
     user_ids.forEach((user_id,i)=>{
-        createIcon(list,user_id,headshots["data"][i].imageUrl,users["data"][i]["displayName"],"Offline","offline")
+        const st = status["userPresences"][i]
+        createIcon(list,user_id,headshots["data"][i].imageUrl,users["data"][i]["displayName"],st["lastLocation"],presences[st["userPresenceType"]])
     })
 }
 
@@ -151,6 +160,10 @@ hookedPage.push(()=>{
         }
 
         a.onclick = ()=>{
+
+            if (Object.keys(rwData["friend_pins"]).length < 1) {
+                window.location.assign("https://www.roblox.com/rowindy/categories")
+            }
             if (!userId) return
 
             if (a.getAttribute("filled") === "true") {

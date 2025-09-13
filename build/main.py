@@ -1,6 +1,10 @@
 import json
 import os
 import re
+import shutil
+
+shutil.rmtree("./dist/")
+os.makedirs("dist/userscript/",exist_ok=True)
 
 metadata = ["// ==UserScript=="]
 
@@ -39,12 +43,12 @@ script.append(walk("src/main.js"))
 
 script.append("""})();""")
 
-with open("dist/RoWindy.dev.js","w+") as f:
+with open("dist/userscript/RoWindy.dev.js","w+") as f:
     f.write("\n".join(script))
 
 os.system("js-beautify -r dist/RoWindy.dev.js")
-os.system("terser dist/RoWindy.dev.js --compress --mangle --output dist/RoWindy.js")
+os.system("terser dist/userscript/RoWindy.dev.js --compress --mangle --output dist/RoWindy.js")
 
-with open("dist/RoWindy.userscript.js","w+") as f:
+with open("dist/userscript/RoWindy.userscript.js","w+") as f:
     with open("dist/RoWindy.js","r") as r:
         f.write("\n".join(["\n".join(metadata),"\n// Source at https://github.com/grhw/RoWindy\n",r.read()]))
