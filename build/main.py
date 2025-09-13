@@ -5,6 +5,7 @@ import shutil
 
 shutil.rmtree("./dist/")
 os.makedirs("dist/userscript/",exist_ok=True)
+os.makedirs("dist/extension/",exist_ok=True)
 
 metadata = ["// ==UserScript=="]
 
@@ -43,12 +44,48 @@ script.append(walk("src/main.js"))
 
 script.append("""})();""")
 
+print("writing userscript files")
 with open("dist/userscript/RoWindy.dev.js","w+") as f:
     f.write("\n".join(script))
 
-os.system("js-beautify -r dist/RoWindy.dev.js")
+os.system("js-beautify -r dist/userscript/RoWindy.dev.js")
 os.system("terser dist/userscript/RoWindy.dev.js --compress --mangle --output dist/RoWindy.js")
 
 with open("dist/userscript/RoWindy.userscript.js","w+") as f:
     with open("dist/RoWindy.js","r") as r:
         f.write("\n".join(["\n".join(metadata),"\n// Source at https://github.com/grhw/RoWindy\n",r.read()]))
+
+print("writing extensions")
+
+manifest = {
+    "manifest_version": 3,
+    "name": config["name"],
+    "version": config["version"],
+    "description": config["description"],
+    "author": config["author"],
+    "content_scripts": [
+        {
+            "matches": [config["match"]],
+            "js": ["content.js"],
+            "run_at": config["run-at"].replace("-","_")
+        }
+    ],
+    "permissions": [],
+    "icons": {
+        "48": "icons/icon48.png",
+        "128": "icons/icon128.png"
+    },
+    "browser_specific_settings": {
+        "gecko": {
+            "id": "rowindy@guhw.dev",
+            "strict_min_version": "109.0"
+        }
+    }
+}
+with open("dist/extension/manifest.json","w+") as f:
+    f.write(json.dumps(manifest))
+
+shutil.copyfile("dist/RoWindy.js","dist/extension/content.js")
+shutil.copytree("icons","dist/extension/icons")
+
+os.system("(cd dist/extension && zip -r ../RoWindy.xpi manifest.json content.js icons/)")
