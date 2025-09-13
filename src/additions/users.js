@@ -184,6 +184,11 @@ hookedPage.push(()=>{
             }
         }
 
-        user.append(a)
+        const container = user.querySelector(".avatar-card-container")
+        if (container) {
+            container.append(a)
+        } else {
+            user.append(a)
+        }
     })
 })
