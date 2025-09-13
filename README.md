@@ -9,4 +9,4 @@ Another Roblox extension/userscript, made by gustwindy
 - Optional border colors for categorized people
 
 ## Requirements
-- until some time in the future, this actually relies on BTR.
+- until some time in the future, this actually relies on BTRoblox. (specifically on getting server data)

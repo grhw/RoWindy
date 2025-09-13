@@ -33,6 +33,11 @@ Object.keys(rwData["friend_pins"]).forEach((category)=>{
     btn.onclick = ()=>{
         const id = callback()
         if (!rwData["friend_pins"][category]["users"].includes(id)) {
+            Object.keys(rwData["friend_pins"]).forEach((cat)=>{
+                const arr = rwData["friend_pins"][cat]["users"]
+                const idx = arr.indexOf(id)
+                if (idx !== -1) arr.splice(idx,1)
+            })
             rwData["friend_pins"][category]["users"].push(id)
             save()
         }
@@ -52,10 +57,42 @@ function getUserPinCategory(userId) {
     return null
 }
 
-function pinUser(aEl,userId) {
+function createList(container,title) {
+    const list = document.createElement("div");
+    list.classList.add("react-friends-carousel-container")
+
+    list.innerHTML = listHtml.replaceAll("{TITLE}",`<span style="color: var(--rw-category-color);">${title}</span> <span class="count">(0)</span>`)
+    container.prepend(list)
+
+    return [list,list.querySelector(".friends-carousel-list-container"),list.querySelector(".count")]
+}
+
+async function addPeopleToList(list,user_ids) {
+    if (user_ids.length === 0) return
+
+    const headshots_raw = await fetch(`https://thumbnails.roblox.com/v1/users/avatar-headshot?size=150x150&format=Png&userIds=${user_ids.join(",")}`)
+    const headshots = await headshots_raw.json()
+    const users_raw = await fetch("https://users.roblox.com/v1/users",{
+        method: "POST",
+        body: JSON.stringify({
+            "userIds": user_ids,
+            "excludeBannedUsers": false
+        })
+    })
+    const users = await users_raw.json()
+
+    user_ids.forEach((user_id,i)=>{
+        createIcon(list,user_id,headshots["data"][i].imageUrl,users["data"][i]["displayName"],"Offline","offline")
+    })
+}
+
+function pinUser(aEl,userId,color) {
     aEl.innerHTML = pinnedIcon
     aEl.setAttribute("filled","true")
     aEl.dataset.userid = userId
+    if (aEl.parentElement) {
+        aEl.parentElement.style.border = `solid 4px ${color}`
+    }
 }
 
 function unpinUser(aEl,userId) {
@@ -70,6 +107,9 @@ function unpinUser(aEl,userId) {
     aEl.innerHTML = pinIcon
     aEl.removeAttribute("filled")
     delete aEl.dataset.userid
+    if (aEl.parentElement) {
+        aEl.parentElement.style.border = ""
+    }
 }
 
 hookedPage.push(()=>{
@@ -104,7 +144,7 @@ hookedPage.push(()=>{
 
         const existingCategory = userId ? getUserPinCategory(userId) : null
         if (existingCategory) {
-            pinUser(a,userId)
+            pinUser(a,userId,existingCategory["color"])
         } else {
             a.innerHTML = pinIcon
             a.setAttribute("filled","false")
@@ -124,7 +164,9 @@ hookedPage.push(()=>{
             elm.style.display = "block"
 
             callback = ()=>{
-                pinUser(a,userId)
+                const cat = getUserPinCategory(userId)
+                const color = cat ? cat["color"] : "var(--theme-accent)"
+                pinUser(a,userId,color)
                 return userId
             }
         }

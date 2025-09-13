@@ -26,6 +26,7 @@ if (window.location.pathname.split("/")[2].toLowerCase() == "categories") {
                 const col = settings.querySelector("#color input")
                 const name = settings.querySelector("#name input")
                 const saveElm = settings.querySelector(".save")
+                const deleteElm = settings.querySelector(".delete")
                 title.innerText = category
 
                 col.value = rwData["friend_pins"][category]["color"]
@@ -36,6 +37,11 @@ if (window.location.pathname.split("/")[2].toLowerCase() == "categories") {
                     rwData["friend_pins"][name.value] = rwData["friend_pins"][category]
                     delete rwData["friend_pins"][category]
 
+                    save()
+                    window.location.reload()
+                }
+                deleteElm.onclick = ()=>{
+                    delete rwData["friend_pins"][category]
                     save()
                     window.location.reload()
                 }
