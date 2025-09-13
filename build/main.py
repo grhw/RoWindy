@@ -20,7 +20,7 @@ with open("src/style.css","r") as f:
     script.append(f"""
 const style = document.createElement("style");
 style.innerHTML = `{f.read()}`
-document.body.prepend(style)
+document.querySelector("html").prepend(style)
 """)
 
 def walk(file):
@@ -28,8 +28,12 @@ def walk(file):
         content = f.read()
     for imp in re.findall(r"//\W+@[\w\/.]+", content):
         path = f"src/{imp.split(" ")[-1].replace("@","")}"
-        return content.replace(imp,walk(path))
-    return content
+        content = content.replace(imp,walk(path))
+    for imp in re.findall(r"//\W+#[\w\/.]+", content):
+        path = f"src/{imp.split(" ")[-1].replace("#","")}"
+        with open(path,"r") as f:
+            content = content.replace(imp,f.read())
+    return f"const {file.split(".")[0].split("/")[-1]} = " + "(function() {\n"+content+"\n})();"
 
 script.append(walk("src/main.js"))
 
