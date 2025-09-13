@@ -6,5 +6,7 @@
     "version": "1.0.0",
     "match": "*://*.roblox.com/*",
     "grant": "none",
-    "run-at": "document-start"
+    "run-at": "document-start",
+    "updateURL": "https://github.com/grhw/RoWindy/releases/latest/download/RoWindy.user.js",
+    "downloadURL": "https://github.com/grhw/RoWindy/releases/latest/download/RoWindy.user.js"
 }

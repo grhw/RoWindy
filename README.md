@@ -4,9 +4,12 @@ Another Roblox extension/userscript, made by gustwindy
 
 
 
-## Installation
-- Install via stores below, or;
-- Go to [Releases](https://github.com/grhw/RoWindy/releases/latest) and add install manually. (There's also a userscript you can use there, but it wont auto-update)
+## Installation (Firefox Only)
+- Install via add-on store (SOON)
+## Installation everywhere else
+- Install [Tampermonkey](https://chromewebstore.google.com/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo).
+- Do whatever it tells you to on the top of your tampermonkey extension UI
+- [Install RoWindy from here](https://github.com/grhw/RoWindy/releases/latest/download/RoWindy.user.js)
 
 ## Features
 - Force Join Servers (Which means, even if something like your friend leaving happens, it lets you join anyway.)

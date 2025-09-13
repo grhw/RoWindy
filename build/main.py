@@ -51,7 +51,7 @@ with open("dist/userscript/RoWindy.dev.js","w+") as f:
 os.system("js-beautify -r dist/userscript/RoWindy.dev.js")
 os.system("terser dist/userscript/RoWindy.dev.js --compress --mangle --output dist/RoWindy.js")
 
-with open("dist/userscript/RoWindy.userscript.js","w+") as f:
+with open("dist/userscript/RoWindy.user.js","w+") as f:
     with open("dist/RoWindy.js","r") as r:
         f.write("\n".join(["\n".join(metadata),"\n// Source at https://github.com/grhw/RoWindy\n",r.read()]))
 
