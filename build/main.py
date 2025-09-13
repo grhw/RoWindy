@@ -89,3 +89,6 @@ shutil.copyfile("dist/RoWindy.js","dist/extension/content.js")
 shutil.copytree("icons","dist/extension/icons")
 
 os.system("(cd dist/extension && zip -r ../RoWindy.xpi manifest.json content.js icons/)")
+
+print("creating source code zip")
+os.system("zip -r source.zip src/ icons/ build/ userscript.json README.md")
