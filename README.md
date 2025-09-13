@@ -17,7 +17,3 @@ Another Roblox extension/userscript, made by gustwindy
 
 ## Requirements
 - until some time in the future, this actually relies on BTRoblox. (specifically on getting server data)
-
-## Build Requirements
-- `terser`, `js-beautify` on pip, and of course Python.
-- Check `build/`
