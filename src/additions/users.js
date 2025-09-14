@@ -67,31 +67,51 @@ function createList(container,title) {
     return [list,list.querySelector(".friends-carousel-list-container"),list.querySelector(".count")]
 }
 
-const presences = ["offline","online","ingame"]
-async function addPeopleToList(list,user_ids) {
+const presences = ["offline","online","game"]
+
+async function addPeopleToList(list, user_ids) {
     if (user_ids.length === 0) return
 
     const headshots_raw = await fetch(`https://thumbnails.roblox.com/v1/users/avatar-headshot?size=150x150&format=Png&userIds=${user_ids.join(",")}`)
     const headshots = await headshots_raw.json()
-    const users_raw = await fetch("https://users.roblox.com/v1/users",{
+
+    const users_raw = await fetch("https://users.roblox.com/v1/users", {
         method: "POST",
         body: JSON.stringify({
-            "userIds": user_ids,
-            "excludeBannedUsers": false
-        })
+            userIds: user_ids,
+            excludeBannedUsers: false
+        }),
+        headers: { "Content-Type": "application/json" }
     })
     const users = await users_raw.json()
-    const status_raw = await fetch("https://presence.roblox.com/v1/presence/users",{
+
+    const status_raw = await fetch("https://presence.roblox.com/v1/presence/users", {
         method: "POST",
-        body: JSON.stringify({
-            "userIds": user_ids,
-        })
+        body: JSON.stringify({ userIds: user_ids }),
+        headers: { "Content-Type": "application/json" }
     })
     const status = await status_raw.json()
 
-    user_ids.forEach((user_id,i)=>{
-        const st = status["userPresences"][i]
-        createIcon(list,user_id,headshots["data"][i].imageUrl,users["data"][i]["displayName"],st["lastLocation"],presences[st["userPresenceType"]])
+    const headshotMap = Object.fromEntries(
+        headshots.data.map(u => [u.targetId, u.imageUrl])
+    )
+    const userMap = Object.fromEntries(
+        users.data.map(u => [u.id, u.displayName])
+    )
+    const statusMap = Object.fromEntries(
+        status.userPresences.map(st => [st.userId, st])
+    )
+
+    user_ids.forEach(user_id => {
+        const st = statusMap[user_id]
+        createIcon(
+            list,
+            user_id,
+            headshotMap[user_id],
+            userMap[user_id],
+            st?.lastLocation,
+            presences[st?.userPresenceType]
+        )
     })
 }
 
