@@ -3,7 +3,7 @@
     "description": "gustwindy's roblox additions / https://github.com/grhw/RoWindy",
     "author": "@gustwindy",
     "namespace": "https://guhw.dev/",
-    "version": "1.0.2",
+    "version": "1.1.0",
     "match": "*://*.roblox.com/*",
     "grant": "none",
     "run-at": "document-start",

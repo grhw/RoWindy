@@ -69,9 +69,7 @@ function createList(container,title) {
 
 const presences = ["offline","online","game"]
 
-async function addPeopleToList(list, user_ids) {
-    if (user_ids.length === 0) return
-
+async function getUserData(user_ids) {
     const headshots_raw = await fetch(`https://thumbnails.roblox.com/v1/users/avatar-headshot?size=150x150&format=Png&userIds=${user_ids.join(",")}`)
     const headshots = await headshots_raw.json()
 
@@ -92,7 +90,7 @@ async function addPeopleToList(list, user_ids) {
     })
     const status = await status_raw.json()
 
-    const headshotMap = Object.fromEntries(
+    const thumbMap = Object.fromEntries(
         headshots.data.map(u => [u.targetId, u.imageUrl])
     )
     const userMap = Object.fromEntries(
@@ -102,12 +100,18 @@ async function addPeopleToList(list, user_ids) {
         status.userPresences.map(st => [st.userId, st])
     )
 
+    return [thumbMap,userMap,statusMap]
+}
+
+async function addPeopleToList(list, user_ids, thumbMap,userMap,statusMap) {
+    if (user_ids.length === 0) return
+
     user_ids.forEach(user_id => {
         const st = statusMap[user_id]
         createIcon(
             list,
             user_id,
-            headshotMap[user_id],
+            thumbMap[user_id],
             userMap[user_id],
             st?.lastLocation,
             presences[st?.userPresenceType]
@@ -144,13 +148,24 @@ function unpinUser(aEl,userId) {
 hookedPage.push(()=>{
     document.querySelectorAll(".friend-carousel-container:not(.rw-list)").forEach(container=>{
         container.classList.add("rw-list")
-        Object.keys(rwData["friend_pins"]).forEach((category)=>{
-            const users = rwData["friend_pins"][category]["users"]
-            const [el,list, count] = createList(container,category);
-            el.setAttribute("style",`--rw-category-color: ${rwData["friend_pins"][category]["color"]};`)
+        const all = []
 
-            count.innerText = `(${users.length})`
-            addPeopleToList(list,users)
+        Object.values(rwData["friend_pins"]).forEach((category)=>{
+            category["users"].forEach(id=>{
+                all.push(id)
+            })
+        })
+
+        getUserData(all).then(data =>{
+            const [thumbMap,userMap,statusMap] = data
+            Object.keys(rwData["friend_pins"]).forEach((category)=>{
+                const users = rwData["friend_pins"][category]["users"]
+                const [el,list, count] = createList(container,category);
+                el.setAttribute("style",`--rw-category-color: ${rwData["friend_pins"][category]["color"]};`)
+    
+                count.innerText = `(${users.length})`
+                addPeopleToList(list,users, thumbMap,userMap,statusMap)
+            })
         })
     })
 
