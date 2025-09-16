@@ -62,3 +62,14 @@
     z-index: 150;
     transform: translateX(-50%) translateY(5px);
 }
+
+.rw-icon {
+    display: block;
+    width: 28px;
+    height: 28px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    border: white 1px solid;
+    border-radius: 5px;
+}

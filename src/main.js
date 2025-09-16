@@ -21,6 +21,7 @@ if (window.location.pathname.split("/")[1].toLowerCase() == "rowindy") {
 }
 
 // @additions/settings/categories.js
+// @additions/settings/settings.js
 
 window.addEventListener("load", scan);
 
