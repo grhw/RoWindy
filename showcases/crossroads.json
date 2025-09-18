@@ -1,0 +1,16 @@
+{
+    "type": "image",
+
+    "background": {
+        "image": "https://images2.imgbox.com/a0/62/OyDoSMxN_o.png",
+        "position": "center bottom",
+        "mini-zoom": "150%"
+    },
+
+    "profile": {
+        "text-color": "red",
+        "subtext-color": "white",
+
+        "stroke": [2,"black"]
+    }
+}

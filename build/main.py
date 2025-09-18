@@ -1,7 +1,8 @@
+import showcases
+import shutil
 import json
 import os
 import re
-import shutil
 
 shutil.rmtree("./dist/")
 os.makedirs("dist/userscript/",exist_ok=True)
@@ -26,6 +27,15 @@ with open("src/style.css","r") as f:
 const style = document.createElement("style");
 style.innerHTML = `{f.read()}`
 document.querySelector("html").prepend(style)
+""")
+
+style = []
+for theme in os.listdir("showcases/"):
+    style.append(showcases.generate(theme))
+script.append(f"""
+const themes = document.createElement("style");
+themes.innerHTML = `{"\n\n".join(style)}`
+document.querySelector("html").prepend(themes)
 """)
 
 def walk(file):

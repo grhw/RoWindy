@@ -14,6 +14,9 @@ function scan() {
     hookedPage.forEach(func => {
         func()
     });
+
+    // literally only here to replace the word Connections to Friends
+    Roblox.LangDynamic["Feature.PeopleList"]["Label.Connections"] = "Friends"
 }
 
 if (window.location.pathname.split("/")[1].toLowerCase() == "rowindy") {

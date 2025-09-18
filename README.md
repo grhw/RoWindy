@@ -4,11 +4,9 @@ Another Roblox extension/userscript, made by gustwindy
 
 
 
-## Installation (Firefox Only)
-- Install via add-on store (SOON)
-## Installation everywhere else
+## Installation
 - Install [Tampermonkey](https://chromewebstore.google.com/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo).
-- Do whatever it tells you to on the top of your tampermonkey extension UI
+- [Do whatever it tells you on Q209 of their FaQ](https://www.tampermonkey.net/faq.php?locale=en#Q209)
 - [Install RoWindy from here](https://github.com/grhw/RoWindy/releases/latest/download/RoWindy.user.js)
 
 ## Features
